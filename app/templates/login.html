@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block body_class %}auth{% endblock %}
+
+{% block body %}
+<div class="auth__stage">
+  <header class="auth__brand">
+    <svg class="auth__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 2.5c2.6 3.1 4.8 5.6 4.8 8.7a4.8 4.8 0 0 1-9.6 0c0-1.2.4-2.2 1.2-3.3.3 1 .9 1.8 1.7 2.3-.2-2.6.5-5 1.9-7.7z"
+            fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M12 13.6c1 1.1 1.6 1.9 1.6 2.9a1.6 1.6 0 0 1-3.2 0c0-1 .6-1.8 1.6-2.9z"
+            fill="currentColor" opacity=".85"/>
+    </svg>
+    <div>
+      <p class="auth__wordmark">Hearth Homelab Start Page</p>
+      <p class="auth__tagline">Your homelab, one page.</p>
+    </div>
+  </header>
+
+  <section class="card auth__card panel-ticks" aria-labelledby="login-heading">
+    <h1 id="login-heading">Sign in</h1>
+    <p class="card__lead">Use the email you registered for this household.</p>
+
+    <form class="form" id="login-form" data-next="{{ next_path }}" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="username" required
+               aria-describedby="email-error" placeholder="you@homelab.local">
+        <p class="field__error" id="email-error" data-error-for="email" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="field__inline">
+          <input id="password" name="password" type="password" autocomplete="current-password" required
+                 aria-describedby="password-error" placeholder="Your password">
+          <button class="btn btn--ghost btn--sm" type="button" id="password-toggle"
+                  aria-pressed="false" aria-label="Show password">Show</button>
+        </div>
+        <p class="field__error" id="password-error" data-error-for="password" hidden></p>
+      </div>
+
+      <p class="form__error" id="form-error" role="alert" hidden></p>
+
+      <button class="btn btn--primary btn--block" type="submit" id="login-submit">Sign in</button>
+    </form>
+
+    <p class="card__foot">No account yet? <a href="/register">Create one</a></p>
+  </section>
+
+  <section class="demo panel-ticks" aria-label="Demo credentials">
+    <p class="demo__title">Demo</p>
+    <p class="demo__line">Demo: {{ demo_email }} / {{ demo_password }}</p>
+    <p class="demo__line demo__line--muted">Second household account: {{ second_demo_email }} / {{ second_demo_password }}</p>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/static/js/auth.js"></script>
+{% endblock %}

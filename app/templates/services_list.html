@@ -1,0 +1,69 @@
+{% extends "app_base.html" %}
+
+{% block workspace %}
+<header class="page-head">
+  <div class="page-head__titles">
+    <h1>All services</h1>
+    <p class="page-head__sub">
+      The shared household catalog — {{ counts.total }} services in {{ category_count }} categories,
+      in default order. Your own tile order lives on the start page.
+    </p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn btn--ghost" href="/">Back to start page</a>
+    <a class="btn btn--primary" href="/services/new">Add service</a>
+  </div>
+</header>
+
+{% if groups %}
+<div class="table-wrap panel-ticks">
+  <table class="table">
+    <caption class="sr-only">Every service in the household catalog with its current status</caption>
+    <thead>
+      <tr>
+        <th scope="col">Service</th>
+        <th scope="col">Address</th>
+        <th scope="col">Category</th>
+        <th scope="col">Status</th>
+        <th scope="col">Last check</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    {% for group in groups %}
+    <tbody>
+      <tr class="table__group">
+        <th scope="colgroup" colspan="6">{{ group.name }} <span class="group__count">{{ group.services|length }}</span></th>
+      </tr>
+      {% for service in group.services %}
+      <tr>
+        <td data-label="Service">
+          <span class="cell-icon" aria-hidden="true">{{ service.icon }}</span>
+          <a class="table__link" href="/services/{{ service.id }}">{{ service.name }}</a>
+        </td>
+        <td data-label="Address"><code class="mono">{{ service.host_port }}</code></td>
+        <td data-label="Category">{{ service.category_name }}</td>
+        <td data-label="Status">
+          <span class="dot dot--{{ status_tone(service.health) }}" aria-hidden="true"></span>
+          <span class="table__status">{{ status_label(service.health) }}</span>
+        </td>
+        <td data-label="Last check" class="mono">
+          {% if service.health %}{{ relative_time(service.health.checked_at) }}{% else %}Never{% endif %}
+        </td>
+        <td data-label="Actions" class="table__actions">
+          <a class="tile__action" href="{{ service.url }}" target="_blank" rel="noopener noreferrer">Open</a>
+          <a class="tile__action" href="/services/{{ service.id }}/edit">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    {% endfor %}
+  </table>
+</div>
+{% else %}
+<div class="empty-state panel-ticks">
+  <p class="empty-state__title">No services yet</p>
+  <p class="empty-state__body">The catalog is empty. Add the first service and everyone in the household sees it.</p>
+  <a class="btn btn--primary" href="/services/new">Add your first service</a>
+</div>
+{% endif %}
+{% endblock %}

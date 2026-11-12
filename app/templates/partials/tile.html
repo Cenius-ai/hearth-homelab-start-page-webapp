@@ -1,0 +1,19 @@
+<li class="tile" data-service-id="{{ service.id }}" data-category-id="{{ service.category_id }}"
+    data-search="{{ (service.name ~ ' ' ~ service.url ~ ' ' ~ service.host_port)|lower }}" draggable="true">
+  <a class="tile__body" href="/services/{{ service.id }}">
+    <span class="tile__icon" aria-hidden="true">{{ service.icon }}</span>
+    <span class="tile__name">{{ service.name }}</span>
+  </a>
+  <p class="tile__host">{{ service.host_port }}</p>
+  <div class="tile__meta">
+    <span class="dot dot--{{ status_tone(service.health) }}" role="img"
+          title="{{ status_detail(service.health) }}"
+          aria-label="{{ status_detail(service.health) }}"></span>
+    <span class="tile__status" aria-hidden="true" title="{{ status_detail(service.health) }}">{{ status_label(service.health) }}</span>
+    <span class="tile__spacer"></span>
+    <a class="tile__action" href="{{ service.url }}" target="_blank" rel="noopener noreferrer"
+       title="Open {{ service.name }} in a new tab">Open</a>
+    <button class="tile__action" type="button" data-check-service="{{ service.id }}"
+            title="Probe {{ service.name }} now">Recheck</button>
+  </div>
+</li>

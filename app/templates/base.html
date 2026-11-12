@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ page_title or "Hearth Homelab Start Page" }}{% endblock %}</title>
+  <meta name="application-name" content="Hearth Homelab Start Page">
+  <meta name="description" content="Hearth Homelab Start Page — a self-hosted homelab start page: service tiles grouped by category, live health dots from recorded checks, bookmarks and your own tile order.">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% block body %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

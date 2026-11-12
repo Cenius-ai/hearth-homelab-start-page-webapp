@@ -1,0 +1,96 @@
+{% extends "app_base.html" %}
+
+{% block workspace %}
+<div data-page="service-detail" data-service-id="{{ service.id }}">
+  <header class="page-head">
+    <div class="page-head__titles">
+      <p class="page-head__eyebrow"><a href="/services">{{ category_name }}</a></p>
+      <h1><span class="detail__icon" aria-hidden="true">{{ service.icon }}</span>{{ service.name }}</h1>
+      <p class="page-head__sub">
+        <span class="dot dot--{{ status_tone(service.health) }}" aria-hidden="true"></span>
+        <span class="detail__status">{{ status_detail(service.health) }}</span>
+      </p>
+    </div>
+    <div class="page-head__actions">
+      <a class="btn btn--primary" href="{{ service.url }}" target="_blank" rel="noopener noreferrer">Open service</a>
+      <a class="btn btn--ghost" href="/services">All services</a>
+      <button class="btn" type="button" id="detail-recheck" data-check-service="{{ service.id }}">Recheck now</button>
+      <a class="btn btn--ghost" href="/services/{{ service.id }}/edit">Edit</a>
+      <form method="post" action="/services/{{ service.id }}/delete" data-confirm="Delete {{ service.name }}? Its health history goes with it.">
+        <button class="btn btn--ghost btn--danger" type="submit">Delete</button>
+      </form>
+    </div>
+  </header>
+
+  <dl class="meta-grid panel-ticks">
+    <div class="meta-grid__cell">
+      <dt>URL</dt>
+      <dd><a class="link" href="{{ service.url }}" target="_blank" rel="noopener noreferrer">{{ service.url }}</a></dd>
+    </div>
+    <div class="meta-grid__cell">
+      <dt>Host:port</dt>
+      <dd class="mono">{{ service.host_port }}</dd>
+    </div>
+    <div class="meta-grid__cell">
+      <dt>Category</dt>
+      <dd>{{ category_name }}</dd>
+    </div>
+    <div class="meta-grid__cell">
+      <dt>Status</dt>
+      <dd>{{ status_label(service.health) }}{% if service.health %} · {{ service.health.latency_ms }} ms{% endif %}</dd>
+    </div>
+    <div class="meta-grid__cell">
+      <dt>Added</dt>
+      <dd>{{ relative_time(service.created_at) }}</dd>
+    </div>
+    <div class="meta-grid__cell">
+      <dt>Updated</dt>
+      <dd>{{ relative_time(service.updated_at) }}</dd>
+    </div>
+  </dl>
+
+  <section class="section" aria-labelledby="history-heading">
+    <div class="section-head">
+      <h2 id="history-heading">Check history</h2>
+      <p class="section-head__meta">Newest first — the latest row drives the status dot.</p>
+    </div>
+    {% if history %}
+    <div class="table-wrap">
+      <table class="table table--compact">
+        <caption class="sr-only">Recorded health checks for {{ service.name }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">Status</th>
+            <th scope="col">Latency</th>
+            <th scope="col">Detail</th>
+            <th scope="col">Checked</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for check in history %}
+          <tr>
+            <td data-label="Status"><span class="dot dot--{{ check.status }}" aria-hidden="true"></span> {{ status_label(check) }}</td>
+            <td data-label="Latency" class="mono">{% if check.latency_ms is not none %}{{ check.latency_ms }} ms{% else %}—{% endif %}</td>
+            <td data-label="Detail">{{ check.message or "—" }}</td>
+            <td data-label="Checked" class="mono">{{ relative_time(check.checked_at) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p class="empty-state__title">No checks recorded yet</p>
+      <p class="empty-state__body">Press “Recheck now” to probe this service and record the first result.</p>
+      <button class="btn btn--primary" type="button" data-check-service="{{ service.id }}">Recheck now</button>
+    </div>
+    {% endif %}
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/static/js/service_detail.js"></script>
+{% endblock %}

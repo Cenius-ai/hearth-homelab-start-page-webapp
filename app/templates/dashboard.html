@@ -1,0 +1,108 @@
+{% extends "app_base.html" %}
+
+{% block workspace %}
+<div data-page="dashboard">
+  <header class="page-head">
+    <div class="page-head__titles">
+      <h1>Hearth Homelab Start Page</h1>
+      <p class="page-head__sub">
+        {{ counts.total }} services in {{ dashboard.groups|length }} categories —
+        <span class="tone-up">{{ counts.up }} up</span>,
+        <span class="tone-down">{{ counts.down }} down</span>,
+        <span class="tone-unknown">{{ counts.unknown }} unchecked</span>
+      </p>
+    </div>
+    <div class="page-head__actions">
+      <div class="search">
+        <label class="sr-only" for="quick-search">Search services and bookmarks</label>
+        <svg class="search__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+          <path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <input id="quick-search" type="search" name="q" autocomplete="off" spellcheck="false"
+               placeholder="Search services and bookmarks">
+        <kbd class="search__kbd" aria-hidden="true">/</kbd>
+      </div>
+      <a class="btn btn--primary" href="/services/new" id="open-add-service" data-modal-open>Add service</a>
+    </div>
+  </header>
+
+  <section class="bookmarks" aria-labelledby="bookmarks-heading">
+    <div class="section-head">
+      <h2 id="bookmarks-heading">Bookmarks</h2>
+      <button class="btn btn--ghost btn--sm" type="button" id="bookmark-add-toggle"
+              aria-expanded="false" aria-controls="bookmark-form">Add bookmark</button>
+    </div>
+
+    <div class="bookmark-row" id="bookmark-row">
+      {% for bookmark in dashboard.bookmarks %}
+      <span class="chip" data-bookmark-id="{{ bookmark.id }}" data-search="{{ (bookmark.label ~ ' ' ~ bookmark.url)|lower }}">
+        <a class="chip__link" href="{{ bookmark.url }}" target="_blank" rel="noopener noreferrer">{{ bookmark.label }}</a>
+        <button class="chip__remove" type="button" data-bookmark-delete="{{ bookmark.id }}"
+                aria-label="Remove bookmark {{ bookmark.label }}">×</button>
+      </span>
+      {% endfor %}
+      <p class="bookmark-row__empty" id="bookmark-empty" {% if dashboard.bookmarks %}hidden{% endif %}>
+        Add your first bookmark — the links you open every day, one click away.
+      </p>
+    </div>
+
+    <form class="inline-form panel-ticks" id="bookmark-form" hidden novalidate>
+      <div class="field field--inline">
+        <label for="bookmark-label">Label</label>
+        <input id="bookmark-label" name="label" type="text" maxlength="40" autocomplete="off" placeholder="Grafana">
+      </div>
+      <div class="field field--inline">
+        <label for="bookmark-url">URL</label>
+        <input id="bookmark-url" name="url" type="text" maxlength="500" autocomplete="off" placeholder="https://grafana.lan:3000">
+      </div>
+      <div class="inline-form__actions">
+        <button class="btn btn--primary btn--sm" type="submit" id="bookmark-submit">Add bookmark</button>
+        <button class="btn btn--ghost btn--sm" type="button" id="bookmark-cancel">Cancel</button>
+      </div>
+      <p class="field__error" id="bookmark-error" role="alert" hidden></p>
+    </form>
+  </section>
+
+  <div class="tile-groups" id="tile-grid">
+    {% for group in dashboard.groups %}
+    <section class="group" data-category-id="{{ group.id }}" aria-labelledby="group-{{ group.id }}">
+      <div class="group__head">
+        <h2 class="group__title" id="group-{{ group.id }}">{{ group.name }}</h2>
+        <span class="group__count" data-count>{{ group.services|length }}</span>
+      </div>
+      <ul class="tiles" data-category-id="{{ group.id }}">
+        {% for service in group.services %}
+        {% include "partials/tile.html" %}
+        {% endfor %}
+      </ul>
+    </section>
+    {% endfor %}
+  </div>
+
+  <div class="empty-state panel-ticks" id="no-services" {% if dashboard.services %}hidden{% endif %}>
+    <p class="empty-state__title">No services yet</p>
+    <p class="empty-state__body">Add your first service and it shows up here for everyone in the household.</p>
+    <a class="btn btn--primary" href="/services/new">Add your first service</a>
+  </div>
+
+  <div class="empty-state panel-ticks" id="search-empty" hidden>
+    <p class="empty-state__title">No services match “<span id="search-term"></span>”</p>
+    <p class="empty-state__body">Try a shorter word, or clear the search to see every tile again.</p>
+    <button class="btn" type="button" id="search-empty-clear">Clear search</button>
+  </div>
+
+  <p class="hint-line">
+    Drag a tile to reorder your own layout — or focus a tile and press
+    <kbd>Alt</kbd> + <kbd>←</kbd> / <kbd>→</kbd>.
+  </p>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+{% include "partials/service_modal.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/static/js/dashboard.js"></script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "app_base.html" %}
+
+{% block workspace %}
+<header class="page-head">
+  <div class="page-head__titles">
+    <h1>Check log</h1>
+    <p class="page-head__sub">
+      Every recorded health check, newest first —
+      <span class="tone-up">{{ counts.up }} up</span>,
+      <span class="tone-down">{{ counts.down }} down</span>,
+      <span class="tone-unknown">{{ counts.unknown }} never checked</span>.
+    </p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn btn--ghost" href="/">Back to start page</a>
+  </div>
+</header>
+
+{% if checks %}
+<div class="table-wrap panel-ticks">
+  <table class="table table--compact">
+    <caption class="sr-only">Recent health checks across the household</caption>
+    <thead>
+      <tr>
+        <th scope="col">Service</th>
+        <th scope="col">Category</th>
+        <th scope="col">Status</th>
+        <th scope="col">Latency</th>
+        <th scope="col">Detail</th>
+        <th scope="col">Checked</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for check in checks %}
+      <tr>
+        <td data-label="Service">
+          <span class="cell-icon" aria-hidden="true">{{ check.service_icon }}</span>
+          <a class="table__link" href="/services/{{ check.service_id }}">{{ check.service_name }}</a>
+        </td>
+        <td data-label="Category">{{ check.category_name }}</td>
+        <td data-label="Status"><span class="dot dot--{{ check.status }}" aria-hidden="true"></span> {{ status_label(check) }}</td>
+        <td data-label="Latency" class="mono">{% if check.latency_ms is not none %}{{ check.latency_ms }} ms{% else %}—{% endif %}</td>
+        <td data-label="Detail">{{ check.message or "—" }}</td>
+        <td data-label="Checked" class="mono">{{ relative_time(check.checked_at) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state panel-ticks">
+  <p class="empty-state__title">Nothing recorded yet</p>
+  <p class="empty-state__body">Recheck a service from the start page and its result is logged here.</p>
+  <a class="btn btn--primary" href="/">Go to the start page</a>
+</div>
+{% endif %}
+{% endblock %}

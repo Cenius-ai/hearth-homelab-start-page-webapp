@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body_class %}auth{% endblock %}
+
+{% block body %}
+<div class="auth__stage">
+  <header class="auth__brand">
+    <svg class="auth__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 2.5c2.6 3.1 4.8 5.6 4.8 8.7a4.8 4.8 0 0 1-9.6 0c0-1.2.4-2.2 1.2-3.3.3 1 .9 1.8 1.7 2.3-.2-2.6.5-5 1.9-7.7z"
+            fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </svg>
+    <div>
+      <p class="auth__wordmark">Hearth Homelab Start Page</p>
+      <p class="auth__tagline">Your homelab, one page.</p>
+    </div>
+  </header>
+
+  <section class="card auth__card panel-ticks" aria-labelledby="err-heading">
+    <p class="card__eyebrow">Error {{ status_code }}</p>
+    <h1 id="err-heading">Something went wrong</h1>
+    <p class="card__lead">
+      {% if message %}{{ message }}{% else %}Hearth hit an unexpected problem handling that request. The details are in the server log.{% endif %}
+    </p>
+    <p class="form__actions">
+      <a class="btn btn--primary" href="/">Back to the start page</a>
+    </p>
+  </section>
+</div>
+{% endblock %}

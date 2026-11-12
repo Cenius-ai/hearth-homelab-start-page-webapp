@@ -1,0 +1,48 @@
+<dialog class="modal" id="service-modal" aria-labelledby="service-modal-title">
+  <form class="form" id="service-form" novalidate>
+    <header class="modal__head">
+      <h2 id="service-modal-title">Add a service</h2>
+      <button class="btn btn--ghost btn--icon" type="button" id="service-modal-close" aria-label="Close">×</button>
+    </header>
+
+    <div class="field">
+      <label for="service-name">Name</label>
+      <input id="service-name" name="name" type="text" maxlength="60" autocomplete="off" placeholder="Plex">
+      <p class="field__error" id="service-name-error" data-error-for="name" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="service-url">URL</label>
+      <input id="service-url" name="url" type="text" maxlength="500" autocomplete="off"
+             placeholder="http://192.168.1.20:32400" aria-describedby="service-url-hint">
+      <p class="field__hint" id="service-url-hint">Must start with http:// or https:// — Hearth derives host:port for the tile.</p>
+      <p class="field__error" id="service-url-error" data-error-for="url" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="service-category">Category</label>
+      <select id="service-category" name="category_id">
+        {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+      <p class="field__error" id="service-category-error" data-error-for="category_id" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="service-icon">Icon</label>
+      <input id="service-icon" name="icon" type="text" maxlength="8" autocomplete="off"
+             placeholder="🎬" aria-describedby="service-icon-hint">
+      <p class="field__hint" id="service-icon-hint">One emoji. Leave it empty for the neutral 🔗 glyph.</p>
+      <p class="field__error" id="service-icon-error" data-error-for="icon" hidden></p>
+    </div>
+
+    <p class="form__error" id="service-form-error" role="alert" hidden></p>
+
+    <div class="modal__actions">
+      <span class="modal__spacer"></span>
+      <button class="btn btn--ghost" type="button" id="service-cancel">Cancel</button>
+      <button class="btn btn--primary" type="submit" id="service-submit">Add service</button>
+    </div>
+  </form>
+</dialog>

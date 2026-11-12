@@ -1,0 +1,66 @@
+{% extends "app_base.html" %}
+
+{% block workspace %}
+<header class="page-head">
+  <div class="page-head__titles">
+    <h1>{{ form_title }}</h1>
+    <p class="page-head__sub">A tile needs a name, an address and a category. Paste the whole URL — Hearth derives the host:port shown on the tile.</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn btn--ghost" href="/services">Back to services</a>
+  </div>
+</header>
+
+<form class="card form form--page panel-ticks" method="post" action="{{ form_action }}" novalidate>
+  <div class="field">
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" maxlength="60" autocomplete="off"
+           value="{{ values.name or '' }}" placeholder="Plex"
+           {% if errors.name %}aria-invalid="true" aria-describedby="name-error"{% endif %}>
+    {% if errors.name %}
+    <p class="field__error" id="name-error">{{ errors.name }}</p>
+    {% else %}
+    <p class="field__hint">Shown under the tile icon, for example Plex.</p>
+    {% endif %}
+  </div>
+
+  <div class="field">
+    <label for="url">URL</label>
+    <input id="url" name="url" type="text" maxlength="500" autocomplete="off"
+           value="{{ values.url or '' }}" placeholder="http://192.168.1.20:32400"
+           {% if errors.url %}aria-invalid="true" aria-describedby="url-error"{% else %}aria-describedby="url-hint"{% endif %}>
+    {% if errors.url %}
+    <p class="field__error" id="url-error">{{ errors.url }}</p>
+    {% else %}
+    <p class="field__hint" id="url-hint">Must start with http:// or https://. The port is shown on the tile when present.</p>
+    {% endif %}
+  </div>
+
+  <div class="field">
+    <label for="category_id">Category</label>
+    <select id="category_id" name="category_id"
+            {% if errors.category_id %}aria-invalid="true" aria-describedby="category-error"{% endif %}>
+      {% for category in categories %}
+      <option value="{{ category.id }}"{% if selected_category == category.id|string %} selected{% endif %}>{{ category.name }}</option>
+      {% endfor %}
+    </select>
+    {% if errors.category_id %}
+    <p class="field__error" id="category-error">{{ errors.category_id }}</p>
+    {% else %}
+    <p class="field__hint">Categories are shared across the household.</p>
+    {% endif %}
+  </div>
+
+  <div class="field">
+    <label for="icon">Icon</label>
+    <input id="icon" name="icon" type="text" maxlength="8" autocomplete="off"
+           value="{{ values.icon or '' }}" placeholder="🎬">
+    <p class="field__hint">One emoji. Leave it empty and the tile uses the neutral 🔗 glyph.</p>
+  </div>
+
+  <div class="form__actions">
+    <button class="btn btn--primary" type="submit">{{ submit_label }}</button>
+    <a class="btn btn--ghost" href="{% if service %}/services/{{ service.id }}{% else %}/services{% endif %}">Cancel</a>
+  </div>
+</form>
+{% endblock %}
