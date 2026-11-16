@@ -88,7 +88,7 @@ _Full guide: [`USAGE.md`](USAGE.md)_
 
 ## Architecture
 
-No external services required: the entire bookmark monitoring dashboard runs from this Full-stack app repo (87 files). Top-level layout: `app/`, `data/`, `tests/`. One command (`./install.sh`) covers dependency setup and demo-data seeding. See [`INSTALL.md`](INSTALL.md) for complete setup instructions.
+No external services required: the entire bookmark monitoring dashboard runs from this Full-stack app repo (75 files). Top-level layout: `app/`, `data/`, `tests/`. One command (`./install.sh`) covers dependency setup and demo-data seeding. See [`INSTALL.md`](INSTALL.md) for complete setup instructions.
 
 ## FAQ
 
